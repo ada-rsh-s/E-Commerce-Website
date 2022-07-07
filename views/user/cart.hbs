@@ -1,0 +1,181 @@
+
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&amp;family=Muli:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../cart/css/style.css">
+</head>
+<body>
+
+<div class="page-heading bg-light">
+<div class="container">
+<div class="row align-items-end">
+<div class="col-lg-7">
+<h1 style="color: #f8ab53;">Cart</h1>
+<p class="mb-4"><a style="color: #fd8700;" href="/products">Home</a> / <strong >Cart</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="untree_co-section">
+<div class="container">
+<div class="row mb-5">
+<form class="col-md-12" method="post">
+<div class="site-blocks-table">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th class="product-thumbnail">Image</th>
+<th class="product-name">Product</th>
+<th class="product-quantity">Quantity</th>
+<th class="product-total">Total</th>
+<th class="product-remove">Remove</th>
+</tr>
+</thead>
+<tbody>
+     {{#each products}}
+<tr>
+<td class="product-thumbnail">
+<img src="/product-images/{{this.product._id}}.jpg" alt="Image" class="img-fluid">
+</td>
+<td class="product-name">
+<h2 class="h5" style="color: #fb641b;">{{this.product.Name}}</td></h2>
+</td>
+<td>
+    <center>
+<div class="input-group mb-3" style="max-width: 120px;">
+<div class="input-group-prepend">
+<button class="cart-item-count btn btn-outline-black js-btn-minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',-1)" type="button">&minus;</button>
+</div>
+<span class="form-control text-center" id="{{this.product._id}}">{{this.quantity}}</span>
+<div class="input-group-append">
+<button class="cart-item-count btn btn-outline-black js-btn-plus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',1)" type="button">&plus;</button>
+</div>
+</div></center>
+</td>
+<td style="color: #388e3c;">₹ {{this.product.Price}}</td>
+<td><button class="cart-item-count btn" style="background-color: #fff;" onclick="deleteCartPro('{{this._id}}','{{this.product._id}}','{{../user}}')" type="button"><img src="/images/trash-9-24.ico" alt="" srcset=""></button></td>
+</tr>
+{{/each}}
+</tbody>
+</table>
+</div>
+</form>
+</div>
+<div class="row">
+<div class="col-md-6">
+<div class="row mb-5">
+<div class="col-md-6 mb-3 mb-md-0">
+    <a  href="/products"><button id="continue" class="btn  btn-sm btn-block">Continue Shopping</button></a>
+</div>
+</div>
+</div>
+<div class="col-md-6 pl-5">
+<div class="row justify-content-end">
+<div class="col-md-7">
+<div class="row">
+<div class="col-md-12 text-right border-bottom mb-5">
+<center><h3 class="h4 text-uppercase">Cart Total</h3></center>
+</div>
+</div>
+<div class="row mb-3">
+<div class="col-md-6">
+<span class="text-black">Subtotal</span>
+</div>
+<div class="col-md-6 text-right">
+<strong style="color: #388e3c;">₹ <span id="total">{{totalValue}}</span></strong>
+</div>
+</div>
+<div class="row">
+<div class="col-md-12">
+<a href="/place-order"><button id="proceed" class="btn btn-lg py-3 btn-block">Proceed To Checkout</button></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="overlayer"></div>
+
+<script src="../cart/js/aos.js"></script>
+<script src="../cart/js/custom.js"></script>
+
+<style>
+    #proceed{
+     background-color: black;
+     color: #fff;
+     border-radius: 10px;
+    }
+    #proceed:hover{
+        background-color: #f69323;
+        color: black;
+        transition-delay: 50ms;
+        transition-duration: 300ms;
+    }
+    #continue{
+     background-color: black;
+     color: #fff;
+    }
+    #continue:hover{
+        background-color: #f69323;
+        color: black;
+        transition-delay: 50ms;
+        transition-duration: 300ms;
+    }
+</style>
+
+<script>
+    function changeQuantity(cartId,proId,userId,count)
+    {
+        let quantity=parseInt(document.getElementById(proId).innerHTML)
+        count=parseInt(count)
+        console.log(userId)
+        $.ajax({
+            url:'/change-product-quantity',
+            data:{
+                user:userId,
+                cart:cartId,
+                product:proId,
+                count:count,
+                quantity:quantity
+            },
+            method:'post',
+            success:(response)=>{
+                if(response.removeProduct){
+                    alert("Product removed from the cart")
+                    location.reload()
+                }else{
+                    document.getElementById(proId).innerHTML=quantity+count
+                    document.getElementById('total').innerHTML=response.total
+                }
+                
+            }
+        })
+    }
+    function deleteCartPro(cartId,proId,userId,count,quantity)
+        {
+        $.ajax({
+            url:'/delete-cart-product',
+            data:{
+                user:userId,
+                cart:cartId,
+                product:proId,
+                count:count,
+                quantity:quantity
+            },
+            method:'post',
+            success:(response)=>{
+                if(response.removeProduct){
+                    alert("Product removed from the cart")
+                    location.reload()
+                }     
+            }
+        })
+    }
+</script>
