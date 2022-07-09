@@ -11244,6 +11244,7 @@ ul {
   .fxt-template-layout29 .fxt-bg-color {
     padding: 50px 15px 42px;
   }
+ 
 }
 .fxt-template-layout29 .fxt-bg-img {
   min-height: 100vh;
@@ -11919,3 +11920,13 @@ ul {
 .fxt-template-layout30 .fxt-footer p {
   color: #6f6f6f;
 }
+@media (max-width: 740px) {
+ .fxt-template-layout29 .fxt-bg-img {
+  min-height: 60vh;
+}
+ }
+  @media (max-width: 550px) {
+ .fxt-template-layout29 .fxt-bg-img {
+  min-height: 60vh;
+}
+ }
