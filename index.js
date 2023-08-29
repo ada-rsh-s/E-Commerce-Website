@@ -23,7 +23,7 @@ app.engine(
     extname: "hbs",
     defaultLayout: "layout",
     layoutsDir: __dirname + "/views/Layout/",
-    partialsDir: __dirname + "/views/Partials/",
+    partialsDir: __dirname + "/views/partials/",
   })
 );
 app.use(logger("dev"));
