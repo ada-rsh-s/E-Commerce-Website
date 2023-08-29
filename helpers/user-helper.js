@@ -1,11 +1,8 @@
 var db = require("../config/connection");
 var collection = require("../config/collections");
 const bcrypt = require("bcrypt");
-const { response } = require("express");
-var objectId = require("mongodb").ObjectID;
+var objectId = require("mongodb").ObjectId;
 const Razorpay = require("razorpay");
-const { ObjectId } = require("mongodb");
-const { resolve } = require("path");
 var instance = new Razorpay({
   key_id: "rzp_test_BTghMaFUWF72Za",
   key_secret: "GtVrMDo7vWDrDIWOZOc65ZFE",
@@ -17,8 +14,12 @@ module.exports = {
       db.get()
         .collection(collection.USER_COLLECTION)
         .insertOne(userData)
-        .then((data) => {
-          resolve(data.ops[0]);
+        .then(async (data) => {
+           let user = await db
+             .get()
+             .collection(collection.USER_COLLECTION)
+             .findOne({ _id: new objectId(data.insertedId) });
+          resolve(user); 
         });
     });
   },
@@ -47,14 +48,14 @@ module.exports = {
   },
   addToCart: (proId, userId) => {
     let proObj = {
-      item: objectId(proId),
+      item: new objectId(proId),
       quantity: 1,
     };
     return new Promise(async (resolve, reject) => {
       let userCart = await db
         .get()
         .collection(collection.CART_COLLECTION)
-        .findOne({ user: objectId(userId) });
+        .findOne({ user: new objectId(userId) });
       if (userCart) {
         let proExist = userCart.products.findIndex(
           (products) => products.item == proId
@@ -63,7 +64,10 @@ module.exports = {
           db.get()
             .collection(collection.CART_COLLECTION)
             .updateOne(
-              { user: objectId(userId), "products.item": objectId(proId) },
+              {
+                user: new objectId(userId),
+                "products.item": new objectId(proId),
+              },
               {
                 $inc: { "products.$.quantity": 1 },
               }
@@ -75,7 +79,7 @@ module.exports = {
           db.get()
             .collection(collection.CART_COLLECTION)
             .updateOne(
-              { user: objectId(userId) },
+              { user: new objectId(userId) },
               {
                 $push: { products: proObj },
               }
@@ -86,7 +90,7 @@ module.exports = {
         }
       } else {
         let cartObj = {
-          user: objectId(userId),
+          user: new objectId(userId),
           products: [proObj],
         };
         db.get()
@@ -105,7 +109,7 @@ module.exports = {
         .collection(collection.CART_COLLECTION)
         .aggregate([
           {
-            $match: { user: objectId(userId) },
+            $match: { user: new objectId(userId) },
           },
           {
             $unwind: "$products",
@@ -142,7 +146,7 @@ module.exports = {
       let cart = await db
         .get()
         .collection(collection.CART_COLLECTION)
-        .findOne({ user: objectId(userId) });
+        .findOne({ user: new objectId(userId) });
       if (cart) {
         count = cart.products.length;
       }
@@ -157,9 +161,9 @@ module.exports = {
         db.get()
           .collection(collection.CART_COLLECTION)
           .updateOne(
-            { _id: objectId(details.cart) },
+            { _id: new objectId(details.cart) },
             {
-              $pull: { products: { item: objectId(details.product) } },
+              $pull: { products: { item: new objectId(details.product) } },
             }
           )
           .then((response) => {
@@ -170,8 +174,8 @@ module.exports = {
           .collection(collection.CART_COLLECTION)
           .updateOne(
             {
-              _id: objectId(details.cart),
-              "products.item": objectId(details.product),
+              _id: new objectId(details.cart),
+              "products.item": new objectId(details.product),
             },
             {
               $inc: { "products.$.quantity": details.count },
@@ -190,7 +194,7 @@ module.exports = {
         .collection(collection.CART_COLLECTION)
         .aggregate([
           {
-            $match: { user: objectId(userId) },
+            $match: { user: new objectId(userId) },
           },
           {
             $unwind: "$products",
@@ -243,7 +247,7 @@ module.exports = {
           state: order.state,
           pincode: order.pincode,
         },
-        userId: objectId(order.userId),
+        userId: new objectId(order.userId),
         paymentMethod: order["payment-method"],
         products: products,
         totalAmount: total,
@@ -259,9 +263,9 @@ module.exports = {
           if (status == "Placed" || status == "placed") {
             db.get()
               .collection(collection.CART_COLLECTION)
-              .removeOne({ user: objectId(order.userId) });
+              .deleteOne({ user: new objectId(order.userId) });
           }
-          resolve(response.ops[0]._id);
+          resolve(response.insertedId);
         });
     });
   },
@@ -270,7 +274,7 @@ module.exports = {
       let cart = await db
         .get()
         .collection(collection.CART_COLLECTION)
-        .findOne({ user: objectId(userId) });
+        .findOne({ user: new objectId(userId) });
       resolve(cart.products);
     });
   },
@@ -279,7 +283,7 @@ module.exports = {
       let orders = await db
         .get()
         .collection(collection.ORDER_COLLECTION)
-        .find({ userId: objectId(userId) })
+        .find({ userId: new objectId(userId) })
         .toArray();
       resolve(orders);
     });
@@ -291,7 +295,7 @@ module.exports = {
         .collection(collection.ORDER_COLLECTION)
         .aggregate([
           {
-            $match: { _id: objectId(orderId) },
+            $match: { _id: new objectId(orderId) },
           },
           {
             $unwind: "$products",
@@ -307,7 +311,7 @@ module.exports = {
               from: collection.PRODUCT_COLLECTION,
               localField: "item",
               foreignField: "_id",
-              as: "product",
+              as: "product", 
             },
           },
           {
@@ -360,7 +364,7 @@ module.exports = {
       db.get()
         .collection(collection.ORDER_COLLECTION)
         .updateOne(
-          { _id: ObjectId(orderId) },
+          { _id: new objectId(orderId) },
           {
             $set: {
               status: "Placed",
@@ -378,9 +382,9 @@ module.exports = {
       db.get()
         .collection(collection.CART_COLLECTION)
         .updateOne(
-          { _id: objectId(details.cart) },
+          { _id: new objectId(details.cart) },
           {
-            $pull: { products: { item: objectId(details.product) } },
+            $pull: { products: { item: new objectId(details.product) } },
           }
         )
         .then((response) => {

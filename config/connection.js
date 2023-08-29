@@ -1,21 +1,17 @@
-const mongoClient=require('mongodb').MongoClient
-const state={
-    db:null
-}
-module.exports.connect=function(done){
+const { MongoClient } = require("mongodb");
+var db = null;
+const url =
+  "mongodb+srv://adarshvillasuni:O2b4EO3PmhYe7dqR@cluster0.qgbn3co.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(url);
+const dbName = "classroom";
 
-    const url =
-      "mongodb+srv://adarsh:adarsh@mobihub.kkvqk.mongodb.net/?retryWrites=true&w=majority";
-    const dbname='shopping'
+module.exports.connect = function () {
+  client.connect();
+  return console.log("Connected successfully to server");
+};
 
-    mongoClient.connect(url,(err,data)=>{
-        if(err) return done(err)
-        state.db=data.db(dbname)
-    })
-
-    done()
-}
-
-module.exports.get=function(){
-    return state.db
-}
+module.exports.get = function () {
+  db = client.db(dbName);
+  return db;
+};
+ 
