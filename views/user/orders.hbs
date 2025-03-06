@@ -1,8 +1,10 @@
-<link rel="stylesheet" href="">
-<link rel="stylesheet" href="../orders/stylle.css">
+<link rel="stylesheet" href="" />
+<link rel="stylesheet" href="../orders/stylle.css" />
 <link
   href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,600,600italic,700,700italic,900italic,900,300,300italic"
-  rel="stylesheet" type="text/css">
+  rel="stylesheet"
+  type="text/css"
+/>
 
 <body>
 
@@ -28,20 +30,40 @@
                 </thead>
                 <tbody>
                   {{#each orders}}
-                  <tr>
-                    <td>
-                      <div style="color:rgb(54, 49, 49);" class="text-center contact-container">{{this.deliveryDetails.firstname}}
-                        {{this.deliveryDetails.lastname}}<span>{{this.day}}-{{this.month}}-{{this.year}}</span></div>
-                    </td>
-                    <td class="text-center">{{this.deliveryDetails.address}},<br>{{this.deliveryDetails.streetaddress}}</td>
-                    <td class="text-center">{{this.deliveryDetails.pincode}}</td>
-                    <td class="text-center">{{this.deliveryDetails.state}}</td>
-                    <td class="text-center">{{this.deliveryDetails.mobile}}</td>
-                    <td class="text-center">₹ {{this.totalAmount}}</td>
-                    <td class="text-center">{{this.paymentMethod}}</td>
-                    <td class="text-center"><a href="/view-order-products/{{this._id}}"><button style="cursor: pointer;" class="label label-primary label-transparent">View Products</button></a></td>
-                    <td class="text-center"><span class="label label-primary label-transparent">{{this.status}}</span></td>
-                  </tr>
+                    <tr>
+                      <td>
+                        <div
+                          style="color:rgb(54, 49, 49);"
+                          class="text-center contact-container"
+                        >{{this.deliveryDetails.firstname}}
+                          {{this.deliveryDetails.lastname}}<span
+                          >{{this.day}}-{{this.month}}-{{this.year}}</span></div>
+                      </td>
+                      <td
+                        class="text-center"
+                      >{{this.deliveryDetails.address}},<br
+                        />{{this.deliveryDetails.streetaddress}}</td>
+                      <td
+                        class="text-center"
+                      >{{this.deliveryDetails.pincode}}</td>
+                      <td
+                        class="text-center"
+                      >{{this.deliveryDetails.state}}</td>
+                      <td
+                        class="text-center"
+                      >{{this.deliveryDetails.mobile}}</td>
+                      <td class="text-center">₹ {{this.totalAmount}}</td>
+                      <td class="text-center">{{this.paymentMethod}}</td>
+                      <td class="text-center"><a
+                          href="/view-order-products/{{this._id}}"
+                        ><button
+                            style="cursor: pointer;"
+                            class="label label-primary label-transparent"
+                          >View Products</button></a></td>
+                      <td class="text-center"><span
+                          class="label label-primary label-transparent"
+                        >{{this.status}}</span></td>
+                    </tr>
                   {{/each}}
                 </tbody>
               </table>

@@ -1,37 +1,47 @@
 var db = require("../config/connection");
 var collection = require("../config/collections");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 var objectId = require("mongodb").ObjectId;
 const Razorpay = require("razorpay");
+require("dotenv").config();
 var instance = new Razorpay({
-  key_id: "rzp_test_BTghMaFUWF72Za",
-  key_secret: "GtVrMDo7vWDrDIWOZOc65ZFE",
+  key_id: process.env.RAZOR_ID,
+  key_secret: process.env.RAZOR_SECRET,
 });
 module.exports = {
   doSignup: (userData) => {
     return new Promise(async (resolve, reject) => {
+      const userExist = await db
+        .get()
+        .collection(collection.USER_COLLECTION)
+        .findOne({ Email: userData.Email });
+      if (userExist) {
+        resolve({ user: false });
+        return;
+      }
+
       userData.Password = await bcrypt.hash(userData.Password, 10);
       db.get()
         .collection(collection.USER_COLLECTION)
         .insertOne(userData)
         .then(async (data) => {
-           let user = await db
-             .get()
-             .collection(collection.USER_COLLECTION)
-             .findOne({ _id: new objectId(data.insertedId) });
-          resolve(user); 
+          let user = await db
+            .get()
+            .collection(collection.USER_COLLECTION)
+            .findOne({ _id: new objectId(data.insertedId) });
+          resolve({user});
         });
     });
   },
   doLogin: (userData) => {
     return new Promise(async (resolve, reject) => {
-      let loginSatus = false;
       let response = {};
       let user = await db
         .get()
         .collection(collection.USER_COLLECTION)
         .findOne({ Email: userData.Email });
       if (user) {
+        console.log(user);
         bcrypt.compare(userData.Password, user.Password).then((status) => {
           if (status) {
             response.user = user;
@@ -229,10 +239,11 @@ module.exports = {
         ])
         .toArray();
       if (total.length === 0) {
-        resolve()
-      }else{
-      resolve(total[0].total);
- }   });
+        resolve();
+      } else {
+        resolve(total[0].total);
+      }
+    });
   },
   placeOrder: (order, products, total) => {
     return new Promise((resolve, reject) => {
@@ -311,7 +322,7 @@ module.exports = {
               from: collection.PRODUCT_COLLECTION,
               localField: "item",
               foreignField: "_id",
-              as: "product", 
+              as: "product",
             },
           },
           {

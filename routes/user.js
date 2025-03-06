@@ -1,4 +1,3 @@
-const { response } = require("express");
 var express = require("express");
 var router = express.Router();
 const productHelpers = require("../helpers/product-helpers");
@@ -46,10 +45,14 @@ router.get("/signup", (req, res) => {
   res.render("user/signup");
 });
 router.post("/signup", (req, res) => {
-  userHelpers.doSignup(req.body).then((response) => {
-    req.session.user = response;
-    req.session.userLoggedIn = true;
-    res.redirect("/");
+  userHelpers.doSignup(req.body).then(({ user }) => {
+    if (user) {
+      req.session.user = user;
+      req.session.userLoggedIn = true;
+      res.redirect("/products");
+    } else {
+      res.redirect("/signup");
+    }
   });
 });
 router.post("/login", (req, res) => {
@@ -92,7 +95,7 @@ router.get("/add-to-cart/:id", (req, res) => {
 router.post("/change-product-quantity", (req, res, next) => {
   userHelpers.changeProductQuantity(req.body).then(async (response) => {
     response.total = await userHelpers.getTotalAmount(req.body.user);
-    console.log(response,"___________");
+    console.log(response, "___________");
     if (response.total === 0) {
       res.redirect(req.get("referer"));
     } else {

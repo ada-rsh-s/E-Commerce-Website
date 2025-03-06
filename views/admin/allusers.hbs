@@ -1,9 +1,47 @@
-<body>
-    
-{{#each users}}
-<h1>{{this._id}}</h1>
-<h1>{{this.Name}}</h1>
-<h1>{{this.Email}}</h1>
-{{/each}}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-</body>
+    <!-- DataTables CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
+    />
+
+    <!-- jQuery and DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script
+      src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"
+    ></script>
+  </head>
+  <body>
+
+    <h1>User Details</h1>
+
+    <table id="usersTable" class="display">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each users}}
+          <tr>
+            <td>{{this._id}}</td>
+            <td>{{this.Name}}</td>
+            <td>{{this.Email}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <!-- Initialize DataTable -->
+    <script>
+      $(function () { $("#usersTable").DataTable(); });
+    </script>
+
+  </body>
+</html>

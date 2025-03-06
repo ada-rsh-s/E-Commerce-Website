@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -32,7 +33,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(fileUpload());
-app.use(session({ secret: "Key", cookie: { maxAge: 3600000 } }));
+
+app.use(
+  session({
+    secret: process.env.SESSION_KEY,
+    cookie: { maxAge: 3600000 },
+    resave: false,
+    saveUninitialized:false
+  })
+);
 
 app.use("/", userRouter);
 app.use("/admin", adminRouter);

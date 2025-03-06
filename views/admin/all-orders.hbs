@@ -1,36 +1,44 @@
 <section>
-    <div class="container">
+  <div class="container">
 
-        <table class="table mt-5">
-  <thead>
-    <tr>
-      <th scope="col">No</th>
-      <th scope="col">Date</th>
-      <th scope="col">Name</th>
-      <th scope="col">Products</th>
-      <th scope="col">Delivery Details</th>
-      <th scope="col">Amount</th>
-      <th scope="col">Payment Method</th>
-      <th scope="col">Status</th>
-      <th scope="col">Shipping</th>
-</tr>
-  </thead>
-<tbody>
-      
-     {{#each userorders}}
-    <tr>
-      <td scope="row">{{findex @index}}</td>
-      <td>{{this.day}}-{{this.month}}-{{this.year}}</td>
-      <td>{{this.deliveryDetails.firstname}} {{this.deliveryDetails.lastname}}<br> ({{this.userId}})</td>
-       <td><a href="/admin/view-adminproducts/{{this._id}}"><button class="btn btn-success">View Products</button></a></td>
-                <td>{{this.deliveryDetails.address}},<br>{{this.deliveryDetails.pincode}},<br>{{this.deliveryDetails.mobile}}</td>
-                <td>₹{{this.totalAmount}}</td>
-                <td>{{this.paymentMethod}}</td>
-                <td>{{this.status}}</td>
-   <td><a href="/admin/shipOrders/{{this._id}}"><button class="btn btn-success"><b>Ship</b></button></a></td>   
-    </tr>
-     {{/each}}
-  </tbody>
-</table>
-    </div>
+    <table class="table mt-5">
+      <thead>
+        <tr>
+          <th scope="col">No</th>
+          <th scope="col">Date</th>
+          <th scope="col">Name</th>
+          <th scope="col">Products</th>
+          <th scope="col">Delivery Details</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Payment Method</th>
+          <th scope="col">Status</th>
+          <th scope="col">Shipping</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {{#each userorders}}
+          <tr>
+            <td scope="row">{{findex @index}}</td>
+            <td>{{this.day}}-{{this.month}}-{{this.year}}</td>
+            <td>{{this.deliveryDetails.firstname}}
+              {{this.deliveryDetails.lastname}}<br />
+              ({{this.userId}})</td>
+            <td><a href="/admin/view-adminproducts/{{this._id}}"><button
+                  class="btn btn-success"
+                >View Products</button></a></td>
+            <td>{{this.deliveryDetails.address}},<br
+              />{{this.deliveryDetails.pincode}},<br
+              />{{this.deliveryDetails.mobile}}</td>
+            <td>₹{{this.totalAmount}}</td>
+            <td>{{this.paymentMethod}}</td>
+            <td>{{this.status}}</td>
+            <td><a href="/admin/shipOrders/{{this._id}}"><button
+                  class="btn btn-success"
+                ><b>Ship</b></button></a></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </section>

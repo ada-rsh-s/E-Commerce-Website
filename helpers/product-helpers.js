@@ -1,13 +1,12 @@
 var db = require("../config/connection");
 var collection = require("../config/collections");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { response } = require("express");
 const { placeOrder } = require("./user-helper");
 var objectId = require("mongodb").ObjectId;
 module.exports = {
   doAdminLogin: (adminData) => {
     return new Promise(async (resolve, reject) => {
-      let status = false;
       let admin = await db
         .get()
         .collection(collection.ADMIN_COLLECTION)
@@ -65,7 +64,7 @@ module.exports = {
         .find()
         .toArray();
       resolve(products);
-    }); 
+    });
   },
   deleteProduct: (prodId) => {
     return new Promise((resolve, reject) => {
